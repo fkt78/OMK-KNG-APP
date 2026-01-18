@@ -809,13 +809,14 @@ const quizData = [
 ];
 
 // 血液検査データ（男女別基準値）
+// ※学校資料「バイタルサイン・各種検査 基準値一覧」(2025年度 臨床推論 第6講) に準拠
 const labData = [
   { 
     id: "RBC", 
     name: "赤血球数", 
     unit: "万/μL", 
-    male: "430〜570", 
-    female: "380〜500", 
+    male: "435〜555", 
+    female: "386〜492", 
     diff: true,
     memo: "酸素を運ぶ役割。男性の方が高いのが特徴。貧血の診断に重要。" 
   },
@@ -823,17 +824,17 @@ const labData = [
     id: "Hb", 
     name: "ヘモグロビン", 
     unit: "g/dL", 
-    male: "13.5〜17.5", 
-    female: "11.5〜15.0", 
+    male: "13.7〜16.8", 
+    female: "11.6〜14.8", 
     diff: true, 
-    memo: "貧血の指標。女性は11.5を切ると貧血傾向。酸素運搬能力を示す。" 
+    memo: "貧血の指標。女性は11.6を切ると貧血傾向。酸素運搬能力を示す。" 
   },
   { 
     id: "Ht", 
     name: "ヘマトクリット", 
     unit: "%", 
-    male: "40〜50", 
-    female: "35〜45", 
+    male: "40.7〜50.1", 
+    female: "35.1〜44.4", 
     diff: true, 
     memo: "血液の濃さを表す。脱水で上昇、貧血で低下。赤血球の容積比。" 
   },
@@ -841,8 +842,8 @@ const labData = [
     id: "WBC", 
     name: "白血球数", 
     unit: "/μL", 
-    male: "3500〜9000", 
-    female: "3500〜9000", 
+    male: "3300〜8600", 
+    female: "3300〜8600", 
     diff: false,
     memo: "炎症や感染で上昇。男女差は基本的にない。免疫機能の指標。" 
   },
@@ -850,19 +851,82 @@ const labData = [
     id: "PLT", 
     name: "血小板数", 
     unit: "万/μL", 
-    male: "15〜35", 
-    female: "15〜35", 
+    male: "15.8〜34.8", 
+    female: "15.8〜34.8", 
     diff: false, 
     memo: "止血作用。低いと出血傾向。高いと血栓リスク。" 
   },
   { 
-    id: "Cr", 
-    name: "クレアチニン", 
+    id: "PT", 
+    name: "PT（プロトロンビン時間）", 
+    unit: "秒", 
+    male: "10〜13", 
+    female: "10〜13", 
+    diff: false, 
+    memo: "凝固能の検査。ワーファリン使用時に重要。肝機能の指標にも。" 
+  },
+  { 
+    id: "PT活性", 
+    name: "PT活性", 
+    unit: "%", 
+    male: "70〜140", 
+    female: "70〜140", 
+    diff: false, 
+    memo: "プロトロンビン時間の活性値。抗凝固療法のモニタリング。" 
+  },
+  { 
+    id: "TP", 
+    name: "総蛋白", 
+    unit: "g/dL", 
+    male: "6.6〜8.1", 
+    female: "6.6〜8.1", 
+    diff: false, 
+    memo: "栄養状態の指標。アルブミンとグロブリンの合計。" 
+  },
+  { 
+    id: "Alb", 
+    name: "アルブミン", 
+    unit: "g/dL", 
+    male: "4.1〜5.1", 
+    female: "4.1〜5.1", 
+    diff: false, 
+    memo: "栄養・肝機能の指標。浮腫の原因になることも。改良版BCP法。" 
+  },
+  { 
+    id: "CRP", 
+    name: "C反応性蛋白", 
     unit: "mg/dL", 
-    male: "0.6〜1.1", 
-    female: "0.4〜0.7", 
-    diff: true, 
-    memo: "腎機能の指標。筋肉量に比例するため男性が高め。eGFR計算に使用。" 
+    male: "0.3以下", 
+    female: "0.3以下", 
+    diff: false, 
+    memo: "炎症マーカー。感染や炎症で上昇。鋭敏な急性期反応物質。IA法。" 
+  },
+  { 
+    id: "Na", 
+    name: "ナトリウム", 
+    unit: "mEq/L", 
+    male: "138〜145", 
+    female: "138〜145", 
+    diff: false, 
+    memo: "電解質バランス。脱水で上昇、希釈で低下。水分調節の指標。" 
+  },
+  { 
+    id: "K", 
+    name: "カリウム", 
+    unit: "mEq/L", 
+    male: "3.6〜4.8", 
+    female: "3.6〜4.8", 
+    diff: false, 
+    memo: "電解質バランス。腎不全で上昇。不整脈の原因になることも。" 
+  },
+  { 
+    id: "Cl", 
+    name: "クロール", 
+    unit: "mEq/L", 
+    male: "101〜108", 
+    female: "101〜108", 
+    diff: false, 
+    memo: "電解質バランス。酸塩基平衡に関与。嘔吐で低下。" 
   },
   { 
     id: "BUN", 
@@ -874,103 +938,166 @@ const labData = [
     memo: "腎機能・蛋白代謝の指標。脱水や消化管出血で上昇。" 
   },
   { 
-    id: "AST", 
-    name: "AST(GOT)", 
-    unit: "U/L", 
-    male: "10〜40", 
-    female: "10〜40", 
-    diff: false, 
-    memo: "肝機能の指標。心筋や筋肉の障害でも上昇。ALTより非特異的。" 
+    id: "Cr", 
+    name: "クレアチニン", 
+    unit: "mg/dL", 
+    male: "0.65〜1.07", 
+    female: "0.46〜0.79", 
+    diff: true, 
+    memo: "腎機能の指標。筋肉量に比例するため男性が高め。eGFR計算に使用。" 
   },
   { 
-    id: "ALT", 
-    name: "ALT(GPT)", 
-    unit: "U/L", 
-    male: "5〜45", 
-    female: "5〜45", 
-    diff: false, 
-    memo: "肝機能の指標。肝臓に特異的。脂肪肝や肝炎で上昇。" 
-  },
-  { 
-    id: "TP", 
-    name: "総蛋白", 
-    unit: "g/dL", 
-    male: "6.5〜8.0", 
-    female: "6.5〜8.0", 
-    diff: false, 
-    memo: "栄養状態の指標。アルブミンとグロブリンの合計。" 
-  },
-  { 
-    id: "Alb", 
-    name: "アルブミン", 
-    unit: "g/dL", 
-    male: "3.8〜5.3", 
-    female: "3.8〜5.3", 
-    diff: false, 
-    memo: "栄養・肝機能の指標。浮腫の原因になることも。膠質浸透圧維持。" 
+    id: "UA", 
+    name: "尿酸", 
+    unit: "mg/dL", 
+    male: "3.7〜7.8", 
+    female: "2.6〜5.5", 
+    diff: true, 
+    memo: "高尿酸血症・痛風の指標。男性の方が高い。プリン体代謝の産物。" 
   },
   { 
     id: "T-Bil", 
     name: "総ビリルビン", 
     unit: "mg/dL", 
-    male: "0.2〜1.2", 
-    female: "0.2〜1.2", 
+    male: "0.4〜1.5", 
+    female: "0.4〜1.5", 
     diff: false, 
     memo: "黄疸の指標。肝機能障害や溶血で上昇。2.0以上で黄疸出現。" 
   },
   { 
-    id: "BS", 
-    name: "血糖", 
+    id: "D-Bil", 
+    name: "直接ビリルビン", 
     unit: "mg/dL", 
-    male: "70〜110", 
-    female: "70〜110", 
+    male: "0.4以下", 
+    female: "0.4以下", 
+    diff: false, 
+    memo: "抱合型ビリルビン。胆汁うっ滞で上昇。肝内・肝外閉塞の鑑別。" 
+  },
+  { 
+    id: "AST", 
+    name: "AST", 
+    unit: "IU/L", 
+    male: "13〜30", 
+    female: "13〜30", 
+    diff: false, 
+    memo: "肝機能の指標。心筋や筋肉の障害でも上昇。ALTより非特異的。" 
+  },
+  { 
+    id: "ALT", 
+    name: "ALT", 
+    unit: "IU/L", 
+    male: "10〜42", 
+    female: "7〜23", 
+    diff: true, 
+    memo: "肝機能の指標。肝臓に特異的。脂肪肝や肝炎で上昇。男女差あり！" 
+  },
+  { 
+    id: "LDH", 
+    name: "LDH（乳酸脱水素酵素）", 
+    unit: "IU/L", 
+    male: "124〜222", 
+    female: "124〜222", 
+    diff: false, 
+    memo: "組織障害の指標。溶血・肝障害・心筋梗塞などで上昇。" 
+  },
+  { 
+    id: "ALP", 
+    name: "ALP（アルカリホスファターゼ）", 
+    unit: "IU/L", 
+    male: "38〜113", 
+    female: "38〜113", 
+    diff: false, 
+    memo: "肝・胆道・骨疾患で上昇。IFCC法。胆汁うっ滞の指標。" 
+  },
+  { 
+    id: "γ-GTP", 
+    name: "γ-GTP", 
+    unit: "IU/L", 
+    male: "13〜64", 
+    female: "9〜32", 
+    diff: true, 
+    memo: "アルコール性肝障害の指標。胆汁うっ滞でも上昇。男女差あり。" 
+  },
+  { 
+    id: "ChE", 
+    name: "ChE（コリンエステラーゼ）", 
+    unit: "IU/L", 
+    male: "240〜486", 
+    female: "201〜421", 
+    diff: true, 
+    memo: "肝臓の蛋白合成能の指標。脂肪肝で上昇、肝硬変で低下。男女差あり。" 
+  },
+  { 
+    id: "TC", 
+    name: "TC（総コレステロール）", 
+    unit: "mg/dL", 
+    male: "142〜248", 
+    female: "142〜248", 
+    diff: false, 
+    memo: "脂質代謝の指標。動脈硬化のリスク因子。食事の影響を受ける。" 
+  },
+  { 
+    id: "LDL-C", 
+    name: "LDL-C（LDLコレステロール）", 
+    unit: "mg/dL", 
+    male: "65〜163", 
+    female: "65〜163", 
+    diff: false, 
+    memo: "悪玉コレステロール。動脈硬化の主要因子。140以上で高LDL血症。" 
+  },
+  { 
+    id: "HDL-C", 
+    name: "HDL-C（HDLコレステロール）", 
+    unit: "mg/dL", 
+    male: "38〜90", 
+    female: "48〜103", 
+    diff: true, 
+    memo: "善玉コレステロール。40未満で低HDL血症。女性の方が高い。" 
+  },
+  { 
+    id: "TG", 
+    name: "TG（中性脂肪、トリグリセリド）", 
+    unit: "mg/dL", 
+    male: "40〜234", 
+    female: "30〜117", 
+    diff: true, 
+    memo: "脂質異常症の指標。150以上で高TG血症。食事の影響大。男女差あり。" 
+  },
+  { 
+    id: "CK", 
+    name: "CK（クレアチンキナーゼ）", 
+    unit: "IU/L", 
+    male: "59〜248", 
+    female: "41〜153", 
+    diff: true, 
+    memo: "筋肉・心筋の障害で上昇。筋肉量に比例するため男性が高い。" 
+  },
+  { 
+    id: "AMY", 
+    name: "AMY（アミラーゼ）", 
+    unit: "IU/L", 
+    male: "44〜132", 
+    female: "44〜132", 
+    diff: false, 
+    memo: "膵臓・唾液腺の障害で上昇。膵炎の診断に重要。" 
+  },
+  { 
+    id: "BS", 
+    name: "BS, GLU（血糖、グルコース）", 
+    unit: "mg/dL", 
+    male: "70〜109", 
+    female: "70〜109", 
     diff: false, 
     memo: "空腹時血糖。糖尿病の診断に使用。126以上で糖尿病型。" 
   },
   { 
     id: "HbA1c", 
-    name: "ヘモグロビンA1c", 
+    name: "HbA1c（ヘモグロビンA1c）", 
     unit: "%", 
-    male: "4.6〜6.2", 
-    female: "4.6〜6.2", 
+    male: "4.9〜6.0", 
+    female: "4.9〜6.0", 
     diff: false, 
-    memo: "過去1〜2ヶ月の血糖コントロール。6.5%以上で糖尿病型。" 
-  },
-  { 
-    id: "CRP", 
-    name: "C反応性蛋白", 
-    unit: "mg/dL", 
-    male: "0〜0.3", 
-    female: "0〜0.3", 
-    diff: false, 
-    memo: "炎症マーカー。感染や炎症で上昇。鋭敏な急性期反応物質。" 
-  },
-  { 
-    id: "Na", 
-    name: "ナトリウム", 
-    unit: "mEq/L", 
-    male: "135〜145", 
-    female: "135〜145", 
-    diff: false, 
-    memo: "電解質バランス。脱水で上昇、希釈で低下。水分調節の指標。" 
-  },
-  { 
-    id: "K", 
-    name: "カリウム", 
-    unit: "mEq/L", 
-    male: "3.5〜5.0", 
-    female: "3.5〜5.0", 
-    diff: false, 
-    memo: "電解質バランス。腎不全で上昇。不整脈の原因になることも。" 
-  },
-  { 
-    id: "Cl", 
-    name: "クロール", 
-    unit: "mEq/L", 
-    male: "98〜108", 
-    female: "98〜108", 
-    diff: false, 
-    memo: "電解質バランス。酸塩基平衡に関与。嘔吐で低下。" 
+    memo: "過去1〜2ヶ月の血糖コントロール。6.5%以上で糖尿病型。NGSP値。" 
   }
 ];
 

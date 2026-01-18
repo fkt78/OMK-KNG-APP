@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medical-quiz-v6';
+const CACHE_NAME = 'medical-quiz-v7';
 const urlsToCache = [
   './medical-quiz.html',
   './manifest.json',
