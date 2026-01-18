@@ -1,0 +1,21 @@
+{
+  "name": "カルテ略語ドリル - 看護実習の味方",
+  "short_name": "医療略語ドリル",
+  "description": "看護現場で使われる医療略語を学習できるアプリ。300語以上収録。クイズモードと辞書モードで効率的に学習。",
+  "start_url": "./medical-quiz.html",
+  "display": "standalone",
+  "background_color": "#f0f8ff",
+  "theme_color": "#00796b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "medical", "health"],
+  "lang": "ja",
+  "dir": "ltr"
+}
