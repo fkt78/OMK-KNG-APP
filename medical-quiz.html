@@ -250,6 +250,129 @@
     opacity: 0.8;
   }
   
+  /* 血液データモード */
+  .gender-btn {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: #667eea;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .gender-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .gender-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .labdata-list {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .lab-item {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    border-left: 5px solid #667eea;
+    transition: all 0.3s ease;
+  }
+  
+  .lab-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .lab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .lab-id {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .lab-name {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .lab-values {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  
+  .lab-value {
+    background: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  .lab-value.male {
+    border-left: 3px solid #3b82f6;
+  }
+  
+  .lab-value.female {
+    border-left: 3px solid #ec4899;
+  }
+  
+  .lab-value-label {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 3px;
+  }
+  
+  .lab-value-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .lab-memo {
+    font-size: 13px;
+    color: #555;
+    background: rgba(255,255,255,0.7);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .diff-badge {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  
   /* スマホ対応 */
   @media (max-width: 600px) {
     .tabs { gap: 5px; }
@@ -275,6 +398,7 @@
 <div class="tabs">
   <button class="tab active" onclick="switchTab(event, 'quiz')">クイズモード</button>
   <button class="tab" onclick="switchTab(event, 'reverse')">逆引きクイズ</button>
+  <button class="tab" onclick="switchTab(event, 'labdata')">血液データ</button>
   <button class="tab" onclick="switchTab(event, 'dictionary')">辞書モード</button>
 </div>
 
@@ -306,6 +430,19 @@
     </div>
   </div>
   <button onclick="nextReverseQuestion()" class="btn btn-next">➡️ 次の問題へ</button>
+</div>
+
+<!-- 血液データモード -->
+<div id="labdata-mode" class="tab-content">
+  <div class="card" style="max-width: 600px;">
+    <div style="font-size: 13px; color:#999; margin-bottom:15px; font-weight: 600; letter-spacing: 1px;">🩸 血液検査データ基準値</div>
+    <div style="margin-bottom: 20px;">
+      <button onclick="toggleGender('male')" id="btn-male" class="gender-btn active">👨 男性</button>
+      <button onclick="toggleGender('female')" id="btn-female" class="gender-btn">👩 女性</button>
+      <button onclick="toggleGender('both')" id="btn-both" class="gender-btn">👥 両方</button>
+    </div>
+    <div id="labdata-list" class="labdata-list"></div>
+  </div>
 </div>
 
 <!-- 辞書モード -->
@@ -648,8 +785,175 @@ const quizData = [
   { q: "y/o", term: "Year-Old", meaning: "歳", comment: "年齢。75y/o=75歳。" }
 ];
 
+// 血液検査データ（男女別基準値）
+const labData = [
+  { 
+    id: "RBC", 
+    name: "赤血球数", 
+    unit: "万/μL", 
+    male: "430〜570", 
+    female: "380〜500", 
+    diff: true,
+    memo: "酸素を運ぶ役割。男性の方が高いのが特徴。貧血の診断に重要。" 
+  },
+  { 
+    id: "Hb", 
+    name: "ヘモグロビン", 
+    unit: "g/dL", 
+    male: "13.5〜17.5", 
+    female: "11.5〜15.0", 
+    diff: true, 
+    memo: "貧血の指標。女性は11.5を切ると貧血傾向。酸素運搬能力を示す。" 
+  },
+  { 
+    id: "Ht", 
+    name: "ヘマトクリット", 
+    unit: "%", 
+    male: "40〜50", 
+    female: "35〜45", 
+    diff: true, 
+    memo: "血液の濃さを表す。脱水で上昇、貧血で低下。赤血球の容積比。" 
+  },
+  { 
+    id: "WBC", 
+    name: "白血球数", 
+    unit: "/μL", 
+    male: "3500〜9000", 
+    female: "3500〜9000", 
+    diff: false,
+    memo: "炎症や感染で上昇。男女差は基本的にない。免疫機能の指標。" 
+  },
+  { 
+    id: "PLT", 
+    name: "血小板数", 
+    unit: "万/μL", 
+    male: "15〜35", 
+    female: "15〜35", 
+    diff: false, 
+    memo: "止血作用。低いと出血傾向。高いと血栓リスク。" 
+  },
+  { 
+    id: "Cr", 
+    name: "クレアチニン", 
+    unit: "mg/dL", 
+    male: "0.6〜1.1", 
+    female: "0.4〜0.7", 
+    diff: true, 
+    memo: "腎機能の指標。筋肉量に比例するため男性が高め。eGFR計算に使用。" 
+  },
+  { 
+    id: "BUN", 
+    name: "尿素窒素", 
+    unit: "mg/dL", 
+    male: "8〜20", 
+    female: "8〜20", 
+    diff: false, 
+    memo: "腎機能・蛋白代謝の指標。脱水や消化管出血で上昇。" 
+  },
+  { 
+    id: "AST", 
+    name: "AST(GOT)", 
+    unit: "U/L", 
+    male: "10〜40", 
+    female: "10〜40", 
+    diff: false, 
+    memo: "肝機能の指標。心筋や筋肉の障害でも上昇。ALTより非特異的。" 
+  },
+  { 
+    id: "ALT", 
+    name: "ALT(GPT)", 
+    unit: "U/L", 
+    male: "5〜45", 
+    female: "5〜45", 
+    diff: false, 
+    memo: "肝機能の指標。肝臓に特異的。脂肪肝や肝炎で上昇。" 
+  },
+  { 
+    id: "TP", 
+    name: "総蛋白", 
+    unit: "g/dL", 
+    male: "6.5〜8.0", 
+    female: "6.5〜8.0", 
+    diff: false, 
+    memo: "栄養状態の指標。アルブミンとグロブリンの合計。" 
+  },
+  { 
+    id: "Alb", 
+    name: "アルブミン", 
+    unit: "g/dL", 
+    male: "3.8〜5.3", 
+    female: "3.8〜5.3", 
+    diff: false, 
+    memo: "栄養・肝機能の指標。浮腫の原因になることも。膠質浸透圧維持。" 
+  },
+  { 
+    id: "T-Bil", 
+    name: "総ビリルビン", 
+    unit: "mg/dL", 
+    male: "0.2〜1.2", 
+    female: "0.2〜1.2", 
+    diff: false, 
+    memo: "黄疸の指標。肝機能障害や溶血で上昇。2.0以上で黄疸出現。" 
+  },
+  { 
+    id: "BS", 
+    name: "血糖", 
+    unit: "mg/dL", 
+    male: "70〜110", 
+    female: "70〜110", 
+    diff: false, 
+    memo: "空腹時血糖。糖尿病の診断に使用。126以上で糖尿病型。" 
+  },
+  { 
+    id: "HbA1c", 
+    name: "ヘモグロビンA1c", 
+    unit: "%", 
+    male: "4.6〜6.2", 
+    female: "4.6〜6.2", 
+    diff: false, 
+    memo: "過去1〜2ヶ月の血糖コントロール。6.5%以上で糖尿病型。" 
+  },
+  { 
+    id: "CRP", 
+    name: "C反応性蛋白", 
+    unit: "mg/dL", 
+    male: "0〜0.3", 
+    female: "0〜0.3", 
+    diff: false, 
+    memo: "炎症マーカー。感染や炎症で上昇。鋭敏な急性期反応物質。" 
+  },
+  { 
+    id: "Na", 
+    name: "ナトリウム", 
+    unit: "mEq/L", 
+    male: "135〜145", 
+    female: "135〜145", 
+    diff: false, 
+    memo: "電解質バランス。脱水で上昇、希釈で低下。水分調節の指標。" 
+  },
+  { 
+    id: "K", 
+    name: "カリウム", 
+    unit: "mEq/L", 
+    male: "3.5〜5.0", 
+    female: "3.5〜5.0", 
+    diff: false, 
+    memo: "電解質バランス。腎不全で上昇。不整脈の原因になることも。" 
+  },
+  { 
+    id: "Cl", 
+    name: "クロール", 
+    unit: "mEq/L", 
+    male: "98〜108", 
+    female: "98〜108", 
+    diff: false, 
+    memo: "電解質バランス。酸塩基平衡に関与。嘔吐で低下。" 
+  }
+];
+
 let currentIdx = -1;
 let reverseIdx = -1;
+let currentGender = 'both'; // 'male', 'female', 'both'
 
 // タブ切り替え
 function switchTab(event, tabName) {
@@ -665,6 +969,9 @@ function switchTab(event, tabName) {
   } else if (tabName === 'reverse') {
     document.getElementById('reverse-mode').classList.add('active');
     if (reverseIdx === -1) nextReverseQuestion();
+  } else if (tabName === 'labdata') {
+    document.getElementById('labdata-mode').classList.add('active');
+    renderLabData();
   } else if (tabName === 'dictionary') {
     document.getElementById('dictionary-mode').classList.add('active');
     renderDictionary();
@@ -737,6 +1044,62 @@ function filterDictionary() {
   );
   
   renderDictionary(filtered);
+}
+
+// 血液データモード
+function toggleGender(gender) {
+  currentGender = gender;
+  
+  // ボタンのアクティブ状態を更新
+  document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('btn-' + gender).classList.add('active');
+  
+  renderLabData();
+}
+
+function renderLabData() {
+  const listDiv = document.getElementById('labdata-list');
+  
+  listDiv.innerHTML = labData.map(item => {
+    const showMale = currentGender === 'male' || currentGender === 'both';
+    const showFemale = currentGender === 'female' || currentGender === 'both';
+    
+    let valuesHTML = '<div class="lab-values">';
+    
+    if (showMale) {
+      valuesHTML += `
+        <div class="lab-value male">
+          <div class="lab-value-label">👨 男性</div>
+          <div class="lab-value-number">${item.male} ${item.unit}</div>
+        </div>
+      `;
+    }
+    
+    if (showFemale) {
+      valuesHTML += `
+        <div class="lab-value female">
+          <div class="lab-value-label">👩 女性</div>
+          <div class="lab-value-number">${item.female} ${item.unit}</div>
+        </div>
+      `;
+    }
+    
+    valuesHTML += '</div>';
+    
+    const diffBadge = item.diff ? '<span class="diff-badge">男女差あり</span>' : '';
+    
+    return `
+      <div class="lab-item">
+        <div class="lab-header">
+          <div class="lab-id">${item.id}</div>
+          ${diffBadge}
+        </div>
+        <div class="lab-name">${item.name}</div>
+        ${valuesHTML}
+        <div class="lab-memo">💡 ${item.memo}</div>
+      </div>
+    `;
+  }).join('');
 }
 
 // 最初に問題を出す
