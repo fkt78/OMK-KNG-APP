@@ -10,43 +10,266 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <style>
-  body { font-family: sans-serif; background-color: #f0f8ff; text-align: center; padding: 20px; margin: 0; }
-  .tabs { display: flex; justify-content: center; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
-  .tab { background-color: white; color: #00796b; border: 2px solid #00796b; padding: 12px 20px; font-size: 15px; border-radius: 10px 10px 0 0; cursor: pointer; transition: all 0.3s; min-width: 100px; }
-  .tab.active { background-color: #00796b; color: white; }
-  .tab:hover { background-color: #e0f2f1; }
-  .tab.active:hover { background-color: #00796b; }
-  .tab-content { display: none; }
+  * { box-sizing: border-box; }
+  
+  body { 
+    font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    text-align: center; 
+    padding: 15px; 
+    margin: 0; 
+  }
+  
+  /* ヘッダー */
+  h1 { 
+    font-size: 1.5rem; 
+    color: white; 
+    margin: 20px 0 30px 0; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  
+  /* タブ */
+  .tabs { 
+    display: flex; 
+    justify-content: center; 
+    gap: 8px; 
+    margin-bottom: 25px; 
+    flex-wrap: wrap; 
+  }
+  
+  .tab { 
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white; 
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 24px; 
+    font-size: 15px; 
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    min-width: 110px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .tab:hover { 
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  
+  .tab.active { 
+    background: white;
+    color: #667eea;
+    border-color: white;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+  }
+  
+  .tab.active:hover { 
+    transform: translateY(-2px);
+  }
+  
+  .tab-content { display: none; animation: fadeIn 0.4s ease; }
   .tab-content.active { display: block; }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* カード */
+  .card { 
+    background: white;
+    border-radius: 20px; 
+    padding: 40px 30px; 
+    margin: 20px auto; 
+    max-width: 450px; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    animation: slideUp 0.5s ease;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* 質問 */
+  .question { 
+    font-size: 56px; 
+    font-weight: 800; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 25px;
+    animation: pulse 2s ease-in-out infinite;
+    letter-spacing: 2px;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  /* 答え */
+  .answer { 
+    font-size: 18px; 
+    color: #333; 
+    display: none; 
+    margin-top: 25px; 
+    padding-top: 25px;
+    border-top: 2px solid #f0f0f0;
+    animation: slideDown 0.4s ease;
+  }
+  
+  @keyframes slideDown {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 500px; }
+  }
+  
+  /* ボタン */
+  .btn { 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white; 
+    border: none; 
+    padding: 16px 35px; 
+    font-size: 17px; 
+    font-weight: 600;
+    border-radius: 50px; 
+    cursor: pointer; 
+    margin: 10px; 
+    width: 85%; 
+    max-width: 350px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn:hover { 
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+  }
+  
+  .btn:active { 
+    transform: translateY(-1px);
+  }
+  
+  .btn-next { 
+    background: white;
+    color: #667eea;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .btn-next:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  
+  /* 辞書モード */
+  .search-box { 
+    width: 90%; 
+    max-width: 500px; 
+    padding: 15px 25px; 
+    font-size: 16px; 
+    border: 3px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 50px; 
+    margin: 20px auto; 
+    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .search-box:focus {
+    outline: none;
+    border-color: white;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+  }
+  
+  .dictionary-list { 
+    max-width: 700px; 
+    margin: 20px auto; 
+    text-align: left; 
+  }
+  
+  .dict-item { 
+    background: white;
+    border-radius: 15px; 
+    padding: 25px; 
+    margin: 15px 0; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border-left: 5px solid #667eea;
+  }
+  
+  .dict-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+  }
+  
+  .dict-abbr { 
+    font-size: 36px; 
+    font-weight: 800; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px; 
+  }
+  
+  .dict-term { 
+    font-size: 14px; 
+    color: #888; 
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  
+  .dict-meaning { 
+    font-size: 22px; 
+    color: #333; 
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
+  .dict-comment { 
+    font-size: 14px; 
+    color: #666; 
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 12px 15px; 
+    border-radius: 10px;
+    border-left: 3px solid #667eea;
+  }
+  
+  .no-result { 
+    color: white; 
+    padding: 40px;
+    font-size: 18px;
+    opacity: 0.8;
+  }
   
   /* スマホ対応 */
   @media (max-width: 600px) {
-    .tabs { gap: 3px; }
-    .tab { padding: 10px 15px; font-size: 13px; min-width: 90px; }
-    h1 { font-size: 1rem; }
+    .tabs { gap: 5px; }
+    .tab { padding: 10px 18px; font-size: 13px; min-width: 95px; }
+    h1 { font-size: 1.2rem; margin: 15px 0 20px 0; }
+    .card { padding: 30px 20px; }
+    .question { font-size: 42px; }
+    .btn { font-size: 15px; padding: 14px 28px; }
   }
   
-  .card { background: white; border-radius: 15px; padding: 30px; margin: 20px auto; max-width: 400px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-  .question { font-size: 48px; font-weight: bold; color: #00796b; margin-bottom: 20px; }
-  .answer { font-size: 18px; color: #333; display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;}
-  .btn { background-color: #00796b; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 50px; cursor: pointer; margin: 10px; width: 80%; }
-  .btn-next { background-color: #e0f2f1; color: #00796b; }
-  h1 { font-size: 1.2rem; color: #555; margin-top: 0; }
-  
-  /* 辞書モード用のスタイル */
-  .search-box { width: 90%; max-width: 400px; padding: 12px; font-size: 16px; border: 2px solid #00796b; border-radius: 25px; margin: 20px auto; display: block; }
-  .dictionary-list { max-width: 600px; margin: 20px auto; text-align: left; }
-  .dict-item { background: white; border-radius: 10px; padding: 20px; margin: 10px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-  .dict-abbr { font-size: 32px; font-weight: bold; color: #00796b; margin-bottom: 5px; }
-  .dict-term { font-size: 14px; color: #666; margin-bottom: 8px; }
-  .dict-meaning { font-size: 20px; color: #d32f2f; margin-bottom: 10px; }
-  .dict-comment { font-size: 14px; color: #555; background-color: #f5f5f5; padding: 10px; border-radius: 5px; }
-  .no-result { color: #999; padding: 40px; }
+  /* 小さなアニメーション効果 */
+  .card, .dict-item, .btn, .tab {
+    will-change: transform;
+  }
 </style>
 </head>
 <body>
 
-<h1>実習生の味方！カルテ略語ドリル</h1>
+<h1>🏥 カルテ略語ドリル 📚</h1>
+<p style="color: white; font-size: 14px; margin: -20px 0 20px 0; opacity: 0.9;">実習生の強い味方！300語以上収録</p>
 
 <!-- タブ -->
 <div class="tabs">
@@ -58,35 +281,36 @@
 <!-- クイズモード -->
 <div id="quiz-mode" class="tab-content active">
   <div class="card">
+    <div style="font-size: 13px; color:#999; margin-bottom:15px; font-weight: 600; letter-spacing: 1px;">🎯 この略語の意味は？</div>
     <div id="question" class="question">??</div>
-    <button onclick="showAnswer()" class="btn">答えを見る</button>
+    <button onclick="showAnswer()" class="btn">💡 答えを見る</button>
     <div id="answer" class="answer">
-      <div id="full-term" style="font-weight:bold; color:#555;"></div>
-      <div id="meaning" style="font-size: 24px; color:#d32f2f; margin-top:10px;"></div>
-      <div id="comment" style="font-size: 14px; color:#666; margin-top:10px; text-align:left;"></div>
+      <div id="full-term" style="font-weight:600; color:#888; font-size: 16px; font-style: italic;"></div>
+      <div id="meaning" style="font-size: 28px; color:#333; margin-top:12px; font-weight: 700;"></div>
+      <div id="comment" style="font-size: 14px; color:#666; margin-top:15px; text-align:left; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 12px 15px; border-radius: 10px; border-left: 3px solid #667eea;"></div>
     </div>
   </div>
-  <button onclick="nextQuestion()" class="btn btn-next">次の問題へ</button>
+  <button onclick="nextQuestion()" class="btn btn-next">➡️ 次の問題へ</button>
 </div>
 
 <!-- 逆引きクイズモード -->
 <div id="reverse-mode" class="tab-content">
   <div class="card">
-    <div style="font-size: 14px; color:#999; margin-bottom:10px;">この日本語の略語は？</div>
-    <div id="reverse-question" class="question" style="font-size: 36px;">??</div>
-    <button onclick="showReverseAnswer()" class="btn">答えを見る</button>
+    <div style="font-size: 13px; color:#999; margin-bottom:15px; font-weight: 600; letter-spacing: 1px;">📝 この日本語の略語は？</div>
+    <div id="reverse-question" class="question" style="font-size: 38px;">??</div>
+    <button onclick="showReverseAnswer()" class="btn">💡 答えを見る</button>
     <div id="reverse-answer" class="answer">
-      <div id="reverse-abbr" style="font-size: 48px; font-weight:bold; color:#00796b; margin-bottom:10px;"></div>
-      <div id="reverse-term" style="font-size: 16px; color:#555; margin-bottom:10px;"></div>
-      <div id="reverse-comment" style="font-size: 14px; color:#666; text-align:left;"></div>
+      <div id="reverse-abbr" style="font-size: 56px; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom:15px; letter-spacing: 3px;"></div>
+      <div id="reverse-term" style="font-size: 16px; color:#888; margin-bottom:15px; font-style: italic;"></div>
+      <div id="reverse-comment" style="font-size: 14px; color:#666; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 12px 15px; border-radius: 10px; text-align:left; border-left: 3px solid #667eea;"></div>
     </div>
   </div>
-  <button onclick="nextReverseQuestion()" class="btn btn-next">次の問題へ</button>
+  <button onclick="nextReverseQuestion()" class="btn btn-next">➡️ 次の問題へ</button>
 </div>
 
 <!-- 辞書モード -->
 <div id="dictionary-mode" class="tab-content">
-  <input type="text" id="search-input" class="search-box" placeholder="略語や意味で検索（例：BP、血圧）" oninput="filterDictionary()">
+  <input type="text" id="search-input" class="search-box" placeholder="🔍 略語や意味で検索（例：BP、血圧）" oninput="filterDictionary()">
   <div id="dictionary-list" class="dictionary-list"></div>
 </div>
 
