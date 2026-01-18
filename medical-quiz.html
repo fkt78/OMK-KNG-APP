@@ -434,14 +434,37 @@
 
 <!-- 血液データモード -->
 <div id="labdata-mode" class="tab-content">
-  <div class="card" style="max-width: 600px;">
-    <div style="font-size: 13px; color:#999; margin-bottom:15px; font-weight: 600; letter-spacing: 1px;">🩸 血液検査データ基準値</div>
-    <div style="margin-bottom: 20px;">
-      <button onclick="toggleGender('male')" id="btn-male" class="gender-btn active">👨 男性</button>
-      <button onclick="toggleGender('female')" id="btn-female" class="gender-btn">👩 女性</button>
-      <button onclick="toggleGender('both')" id="btn-both" class="gender-btn">👥 両方</button>
+  <!-- モード切り替え -->
+  <div style="margin-bottom: 20px;">
+    <button onclick="switchLabMode('quiz')" id="lab-mode-quiz" class="gender-btn active" style="min-width: 120px;">🎯 クイズ</button>
+    <button onclick="switchLabMode('list')" id="lab-mode-list" class="gender-btn" style="min-width: 120px;">📋 一覧表</button>
+  </div>
+  
+  <!-- クイズモード -->
+  <div id="lab-quiz-mode" style="display: block;">
+    <div class="card">
+      <div style="font-size: 13px; color:#999; margin-bottom:15px; font-weight: 600; letter-spacing: 1px;">🩸 血液データクイズ</div>
+      <div id="lab-question" class="question" style="font-size: 32px; line-height: 1.4;">??</div>
+      <button onclick="showLabAnswer()" class="btn">💡 答えを見る</button>
+      <div id="lab-answer" class="answer">
+        <div id="lab-answer-value" style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom:15px; letter-spacing: 2px;"></div>
+        <div id="lab-answer-memo" style="font-size: 14px; color:#666; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 12px 15px; border-radius: 10px; text-align:left; border-left: 3px solid #667eea;"></div>
+      </div>
     </div>
-    <div id="labdata-list" class="labdata-list"></div>
+    <button onclick="nextLabQuestion()" class="btn btn-next">➡️ 次の問題へ</button>
+  </div>
+  
+  <!-- 一覧モード -->
+  <div id="lab-list-mode" style="display: none;">
+    <div class="card" style="max-width: 600px;">
+      <div style="font-size: 13px; color:#999; margin-bottom:15px; font-weight: 600; letter-spacing: 1px;">🩸 血液検査データ基準値</div>
+      <div style="margin-bottom: 20px;">
+        <button onclick="toggleGender('male')" id="btn-male" class="gender-btn active">👨 男性</button>
+        <button onclick="toggleGender('female')" id="btn-female" class="gender-btn">👩 女性</button>
+        <button onclick="toggleGender('both')" id="btn-both" class="gender-btn">👥 両方</button>
+      </div>
+      <div id="labdata-list" class="labdata-list"></div>
+    </div>
   </div>
 </div>
 
@@ -953,7 +976,10 @@ const labData = [
 
 let currentIdx = -1;
 let reverseIdx = -1;
-let currentGender = 'both'; // 'male', 'female', 'both'
+let labIdx = -1;
+let labGender = 'both'; // クイズ用の性別
+let currentGender = 'both'; // 一覧表示用の性別
+let currentLabMode = 'quiz'; // 'quiz' or 'list'
 
 // タブ切り替え
 function switchTab(event, tabName) {
@@ -971,7 +997,11 @@ function switchTab(event, tabName) {
     if (reverseIdx === -1) nextReverseQuestion();
   } else if (tabName === 'labdata') {
     document.getElementById('labdata-mode').classList.add('active');
-    renderLabData();
+    if (currentLabMode === 'quiz' && labIdx === -1) {
+      nextLabQuestion();
+    } else if (currentLabMode === 'list') {
+      renderLabData();
+    }
   } else if (tabName === 'dictionary') {
     document.getElementById('dictionary-mode').classList.add('active');
     renderDictionary();
@@ -1046,12 +1076,64 @@ function filterDictionary() {
   renderDictionary(filtered);
 }
 
-// 血液データモード
+// 血液データモード - モード切り替え
+function switchLabMode(mode) {
+  currentLabMode = mode;
+  
+  // ボタンのアクティブ状態を更新
+  document.getElementById('lab-mode-quiz').classList.toggle('active', mode === 'quiz');
+  document.getElementById('lab-mode-list').classList.toggle('active', mode === 'list');
+  
+  // 表示切り替え
+  document.getElementById('lab-quiz-mode').style.display = mode === 'quiz' ? 'block' : 'none';
+  document.getElementById('lab-list-mode').style.display = mode === 'list' ? 'block' : 'none';
+  
+  if (mode === 'quiz' && labIdx === -1) {
+    nextLabQuestion();
+  } else if (mode === 'list') {
+    renderLabData();
+  }
+}
+
+// 血液データクイズ
+function nextLabQuestion() {
+  document.getElementById('lab-answer').style.display = 'none';
+  
+  // ランダムに項目を選択
+  labIdx = Math.floor(Math.random() * labData.length);
+  const item = labData[labIdx];
+  
+  // ランダムに性別を選択（男女差がない場合は「男性」で統一）
+  if (item.diff) {
+    labGender = Math.random() > 0.5 ? 'male' : 'female';
+  } else {
+    labGender = 'male'; // 男女差がない場合は男性で代表
+  }
+  
+  const genderText = labGender === 'male' ? '👨 男性' : '👩 女性';
+  
+  // 問題文を表示
+  document.getElementById('lab-question').innerHTML = 
+    `${genderText}の<br><strong>${item.name}</strong><br>(${item.id})<br>の基準値は？`;
+}
+
+function showLabAnswer() {
+  if (labIdx === -1) nextLabQuestion();
+  
+  const item = labData[labIdx];
+  const value = labGender === 'male' ? item.male : item.female;
+  
+  document.getElementById('lab-answer-value').innerText = `${value} ${item.unit}`;
+  document.getElementById('lab-answer-memo').innerText = '💡 ' + item.memo;
+  document.getElementById('lab-answer').style.display = 'block';
+}
+
+// 一覧表示 - 性別切り替え
 function toggleGender(gender) {
   currentGender = gender;
   
   // ボタンのアクティブ状態を更新
-  document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('#btn-male, #btn-female, #btn-both').forEach(btn => btn.classList.remove('active'));
   document.getElementById('btn-' + gender).classList.add('active');
   
   renderLabData();
