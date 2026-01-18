@@ -11,13 +11,20 @@
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <style>
   body { font-family: sans-serif; background-color: #f0f8ff; text-align: center; padding: 20px; margin: 0; }
-  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-  .tab { background-color: white; color: #00796b; border: 2px solid #00796b; padding: 12px 30px; font-size: 16px; border-radius: 10px 10px 0 0; cursor: pointer; transition: all 0.3s; }
+  .tabs { display: flex; justify-content: center; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { background-color: white; color: #00796b; border: 2px solid #00796b; padding: 12px 20px; font-size: 15px; border-radius: 10px 10px 0 0; cursor: pointer; transition: all 0.3s; min-width: 100px; }
   .tab.active { background-color: #00796b; color: white; }
   .tab:hover { background-color: #e0f2f1; }
   .tab.active:hover { background-color: #00796b; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
+  
+  /* スマホ対応 */
+  @media (max-width: 600px) {
+    .tabs { gap: 3px; }
+    .tab { padding: 10px 15px; font-size: 13px; min-width: 90px; }
+    h1 { font-size: 1rem; }
+  }
   
   .card { background: white; border-radius: 15px; padding: 30px; margin: 20px auto; max-width: 400px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
   .question { font-size: 48px; font-weight: bold; color: #00796b; margin-bottom: 20px; }
@@ -43,9 +50,9 @@
 
 <!-- タブ -->
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('quiz')">クイズモード</button>
-  <button class="tab" onclick="switchTab('reverse')">逆引きクイズ</button>
-  <button class="tab" onclick="switchTab('dictionary')">辞書モード</button>
+  <button class="tab active" onclick="switchTab(event, 'quiz')">クイズモード</button>
+  <button class="tab" onclick="switchTab(event, 'reverse')">逆引きクイズ</button>
+  <button class="tab" onclick="switchTab(event, 'dictionary')">辞書モード</button>
 </div>
 
 <!-- クイズモード -->
@@ -421,7 +428,7 @@ let currentIdx = -1;
 let reverseIdx = -1;
 
 // タブ切り替え
-function switchTab(tabName) {
+function switchTab(event, tabName) {
   // すべてのタブとコンテンツを非アクティブに
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
