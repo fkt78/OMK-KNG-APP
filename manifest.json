@@ -1,7 +1,7 @@
 {
-  "name": "カルテ略語ドリル - 看護実習の味方",
-  "short_name": "医療略語ドリル",
-  "description": "看護現場で使われる医療略語を学習できるアプリ。300語以上収録。クイズモードと辞書モードで効率的に学習。",
+  "name": "看護実習生救出大作戦 - カルテ略語マスター",
+  "short_name": "実習生救出",
+  "description": "看護実習生のためのカルテ略語学習アプリ。300語以上収録。クイズモード・逆引きクイズ・辞書モードで効率的に学習。",
   "start_url": "./medical-quiz.html",
   "display": "standalone",
   "background_color": "#f0f8ff",
